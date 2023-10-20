@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora de Comissao - Metas e Vendas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 100%;
+            height: auto;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            background-color: #e3e3e3;
+            border: none;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result-text {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img class="logo" src="https://cdn.bitrix24.com.br/b12305857/landing/5e0/5e0b75c3ebcf8bcd253b9ee7cb5660b6/Logo_03_1x.png" alt="Logo da Way Digital">
+        </div>
+
+        <div id="page1">
+            <h2>Calculadora de Comissao - Metas e Vendas</h2>
+            <label for="tipoCargo">Selecione o tipo de cargo:</label>
+            <select id="tipoCargo">
+                <option value="TRAINEE">TRAINEE</option>
+                <option value="JUNIOR">JUNIOR</option>
+                <option value="PLENO">PLENO</option>
+            </select>
+            <button onclick="avancarParaPagina(2)">Confirmar</button>
+        </div>
+
+        <div id="page2" style="display: none;">
+            <h2>Informe os Dados</h2>
+            <label for="numeroVidas">N de vidas vendidas:</label>
+            <input type="number" id="numeroVidas">
+            <label for "valorVendido">Valor total vendido (R$):</label>
+            <input type="number" id="valorVendido">
+            <button onclick="calcularResultados()">Calcular</button>
+        </div>
+
+        <div class="result-container" id="page3">
+            <h2>Resultados</h2>
+            <p class="result-text" id="comissaoResult"></p>
+            <p class="result-text" id="bonusResult"></p>
+            <p class="result-text" id="premioResult"></p>
+            <button onclick="reiniciarCalculadora()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        function avancarParaPagina(pagina) {
+            document.getElementById('page' + pagina).style.display = 'block';
+            if (pagina > 1) {
+                document.getElementById('page' + (pagina - 1)).style.display = 'none';
+            }
+        }
+
+        function calcularResultados() {
+            const tipoCargo = document.getElementById('tipoCargo').value;
+            const numeroVidas = parseInt(document.getElementById('numeroVidas').value);
+            const valorVendido = parseFloat(document.getElementById('valorVendido').value);
+
+            let comissao = 0;
+            let bonus = 0;
+            let premio = 0;
+
+            if (tipoCargo === 'TRAINEE') {
+                if (numeroVidas <= 5) {
+                    comissao = 0.05 * valorVendido;
+                } else if (numeroVidas >= 6 && numeroVidas <= 10) {
+                    comissao = 0.10 * valorVendido;
+                    bonus = 5 * numeroVidas;
+                } else if (numeroVidas > 10) {
+                    comissao = 0.15 * valorVendido;
+                    bonus = 10 * numeroVidas;
+                }
+                if (numeroVidas >= 10) {
+                    premio = 200.00;
+                }
+            } else if (tipoCargo === 'JUNIOR') {
+                if (numeroVidas <= 7) {
+                    comissao = 0.05 * valorVendido;
+                } else if (numeroVidas >= 8 && numeroVidas <= 11) {
+                    comissao = 0.10 * valorVendido;
+                    bonus = 5 * numeroVidas;
+                } else if (numeroVidas >= 12) {
+                    comissao = 0.15 * valorVendido;
+                    bonus = 10 * numeroVidas;
+                }
+                if (numeroVidas >= 12) {
+                    premio = 200.00;
+                }
+            } else if (tipoCargo === 'PLENO') {
+                if (numeroVidas <= 10) {
+                    comissao = 0.05 * valorVendido;
+                } else if (numeroVidas >= 11 && numeroVidas <= 18) {
+                    comissao = 0.10 * valorVendido;
+                    bonus = 5 * numeroVidas;
+                } else if (numeroVidas >= 19) {
+                    comissao = 0.15 * valorVendido;
+                    bonus = 10 * numeroVidas;
+                }
+                if (numeroVidas >= 18) {
+                    premio = 300.00;
+                }
+            }
+
+            document.getElementById('comissaoResult').textContent = `Comisso: R$ ${comissao.toFixed(2)}`;
+            document.getElementById('bonusResult').textContent = `Bonus: R$ ${bonus.toFixed(2)}`;
+            document.getElementById('premioResult').textContent = `Prmio: R$ ${premio.toFixed(2)}`;
+
+            document.getElementById('page3').style.display = 'block';
+        }
+
+        function reiniciarCalculadora() {
+            document.getElementById('page1').style display = 'block';
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'none';
+
+            // Limpa os campos de entrada
+            document.getElementById('numeroVidas').value = '';
+            document.getElementById('valorVendido').value = '';
+
+            // Limpa os resultados anteriores
+            document.getElementById('comissaoResult').textContent = '';
+            document.getElementById('bonusResult').textContent = '';
+            document.getElementById('premioResult').textContent = '';
+        }
+    </script>
+</body>
+</html>
